@@ -11,13 +11,12 @@ function Parent() {
 
   useEffect(() => {
     // sqlite3Worker1Promiser is available globally because of this script: sqlite3-worker1-promiser.js
-    const client = self.sqlite3Worker1Promiser({
-      onready: () => {
-        setIsSqlClientReady(true);
-      }
-    });
-
     if (sqlClient.current == null) {
+      const client = self.sqlite3Worker1Promiser({
+        onready: () => {
+          setIsSqlClientReady(true);
+        }
+      });
       sqlClient.current = client;
     }
   }, []);
@@ -33,6 +32,7 @@ function Parent() {
 }
 
 function App() {
+  const [isDbInitialized, setIsDbInitialized] = useState(false);
   const sqlClient = useContext(SqliteContext);
 
   useEffect(() => {
@@ -41,9 +41,12 @@ function App() {
       await sqlClient('open', { filename: '/dev.anoga.thibi.db', vfs: 'opfs' })
         .then((x: unknown) => console.log(x))
         .catch((err: unknown) => { console.error(err) });
+      setIsDbInitialized(true)
     }
 
-    initDB();
+    if (!isDbInitialized) {
+      initDB();
+    }
   }, [])
 
 
@@ -59,9 +62,6 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        {/* <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button> */}
         <p className="text-3xl font-bold underline">
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
