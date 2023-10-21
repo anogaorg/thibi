@@ -1,10 +1,51 @@
-import { useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { SqliteContext } from './SqliteContext';
+
+
+function Parent() {
+  const [isSqlClientReady, setIsSqlClientReady] = useState(false);
+  const sqlClient = useRef(null);
+
+  useEffect(() => {
+    // sqlite3Worker1Promiser is available globally because of this script: sqlite3-worker1-promiser.js
+    const client = self.sqlite3Worker1Promiser({
+      onready: () => {
+        setIsSqlClientReady(true);
+      }
+    });
+
+    if (sqlClient.current == null) {
+      sqlClient.current = client;
+    }
+  }, []);
+
+  // TODO: Put a message/note if the client is not ready; not just an empty div.
+  return (
+    <SqliteContext.Provider value={sqlClient.current}>
+      <>
+        {isSqlClientReady ? <App /> : <div></div>}
+      </>
+    </SqliteContext.Provider>
+  )
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const sqlClient = useContext(SqliteContext);
+
+  useEffect(() => {
+    async function initDB() {
+      console.info("Initializing database using `opfs`");
+      await sqlClient('open', { filename: '/dev.anoga.thibi.db', vfs: 'opfs' })
+        .then((x: unknown) => console.log(x))
+        .catch((err: unknown) => { console.error(err) });
+    }
+
+    initDB();
+  }, [])
+
 
   return (
     <>
@@ -18,10 +59,10 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        {/* <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
-        </button>
-        <p>
+        </button> */}
+        <p className="text-3xl font-bold underline">
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
       </div>
@@ -32,4 +73,4 @@ function App() {
   )
 }
 
-export default App
+export default Parent
