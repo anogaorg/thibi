@@ -1,16 +1,22 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-// import { externalizeDeps } from 'vite-plugin-externalize-deps';
 
+// Credit: https://github.com/vitejs/vite/issues/9864#issuecomment-1230560351
+const previewServerPlugin = {
+  name: 'preview-server-headers-plugin',
+  configurePreviewServer(server) {
+    server.middlewares.use((req, res, next) => {
+      res.setHeader("Cross-Origin-Opener-Policy", "same-origin")
+      res.setHeader("Cross-Origin-Embedder-Policy", "require-corp")
+      next()
+    })
+  }
+}
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
-    // externalizeDeps({
-    //   except: [
-    //     '@sqlite.org/sqlite-wasm'
-    //   ]
-    // })
+    previewServerPlugin,
   ],
   server: {
     headers: {
