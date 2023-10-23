@@ -17,7 +17,7 @@ Settings.defaultZone = "utc";
 
 interface FormProps {
     setFormSubmitted: Dispatch<SetStateAction<boolean>>,
-    setLoading: Dispatch<SetStateAction<any>>
+    setLoading: Dispatch<SetStateAction<never[]>>
 }
 
 function ThibiForm(props: FormProps) {
@@ -70,7 +70,7 @@ async function submitHandler(
         }
     );
 
-    let results;
+    let results: never[] = [];
     // @ts-ignore: sqlite client currently has no type
     await sqlite('exec', {
         sql: 'SELECT * FROM jobs ORDER BY timestamp DESC',
@@ -90,12 +90,13 @@ async function submitHandler(
 
 interface PreviewProps {
     uploadDone: string[][]
-};
-interface JobsProps { data: string[] };
+}
+
+interface JobsProps { data: string[] }
 
 function JobsTable(props: JobsProps) {
-    let data = props.data;
-    let ts = DateTime.fromISO(data[1]).setZone("system").toISO();
+    const data = props.data;
+    const ts = DateTime.fromISO(data[1]).setZone("system").toISO();
     return (
         <tr key={data[0]}>
             <td key={crypto.randomUUID()}>{ts}</td>

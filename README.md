@@ -19,3 +19,7 @@ I am still new to the JS ecosystem, but so far it seems like to get this to work
 NOTE: The NPM package is still helpful, at least for types. Though types themselves have also been kind of painful. There's a world where I just stay up to date with the releases directly and update as needed directly from [their release page/WASM .zip file.](https://sqlite.org/download.html)
 
 But hey, it works for now.
+
+# Tailwind Tips
+
+Tailwind is nice, but it might still be a little low-level than what I'm looking for as a beginner CSS human. Liked what [Flowbite](https://flowbite.com/docs/components/forms/#file-upload) has done. It will be good to use them as a learning reference for doing custom components/stylings.

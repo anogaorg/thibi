@@ -37,13 +37,20 @@ function App() {
   const sqlite = useContext(SqliteContext);
 
   useEffect(() => {
+    // TODO: Let's init expected tables and everything here as well.
     async function initDB() {
       console.info("Initializing database using `opfs`");
       // @ts-ignore: sqlite client currently has no type
       await sqlite('open', { filename: MAIN_THIBI_DB, vfs: 'opfs' })
-        .then((x: unknown) => console.log(x))
-        .catch((err: unknown) => { console.error(err) });
-      setIsDbInitialized(true)
+        .then(() => {
+          setIsDbInitialized(true);
+          console.info("Database successfully initialized and connected");
+        })
+        .catch((err: unknown) => {
+          console.error("Database failed to initialize. See error");
+          console.error(err);
+        });
+
     }
 
     if (!isDbInitialized) {
