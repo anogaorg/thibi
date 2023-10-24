@@ -1,8 +1,8 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import './App.css'
 import { SqliteContext } from './SqliteContext';
-import { MAIN_THIBI_DB } from './constants';
 import { Link, Outlet } from 'react-router-dom';
+import initDB from './database/database.ts';
 
 
 function Parent() {
@@ -37,15 +37,9 @@ function App() {
   const sqlite = useContext(SqliteContext);
 
   useEffect(() => {
-    // TODO: Let's init expected tables and everything here as well.
-    async function initDB() {
-      console.info("Initializing database using `opfs`");
-      // @ts-ignore: sqlite client currently has no type
-      await sqlite('open', { filename: MAIN_THIBI_DB, vfs: 'opfs' })
-        .then(() => {
-          setIsDbInitialized(true);
-          console.info("Database successfully initialized and connected");
-        })
+    async function init() {
+      await initDB(sqlite)
+        .then(() => { setIsDbInitialized(true); })
         .catch((err: unknown) => {
           console.error("Database failed to initialize. See error");
           console.error(err);
@@ -54,7 +48,7 @@ function App() {
     }
 
     if (!isDbInitialized) {
-      initDB();
+      init();
     }
   }, [sqlite, isDbInitialized])
 

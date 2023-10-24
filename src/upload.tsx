@@ -54,13 +54,7 @@ async function submitHandler(
     sqlite: unknown,
 ) {
     props.setFormSubmitted(true);
-
-    // @ts-ignore: sqlite client currently has no type
-    await sqlite('exec', 'CREATE TABLE IF NOT EXISTS jobs (id INTEGER PRIMARY KEY, timestamp TEXT, file_name TEXT, table_identifier TEXT)');
-    // @ts-ignore: sqlite client currently has no type
-    await sqlite('exec', 'CREATE UNIQUE INDEX IF NOT EXISTS table_id_idx ON jobs(table_identifier)');
     // TODO: Parse file inputs and input those into its own file table
-
     // @ts-ignore: sqlite client currently has no type
     await sqlite(
         'exec',
@@ -98,7 +92,7 @@ function JobsTable(props: JobsProps) {
     const data = props.data;
     const ts = DateTime.fromISO(data[1]).setZone("system").toISO();
     return (
-        <tr key={data[0]}>
+        <tr className='border-b hover:bg-gray-50' key={data[0]}>
             <td key={crypto.randomUUID()}>{ts}</td>
             <td key={crypto.randomUUID()}>{data[2]}</td>
             <td key={crypto.randomUUID()}>{data[3]}</td>
@@ -119,12 +113,12 @@ function UploadPreview(props: PreviewProps) {
     return (
         props.uploadDone ?
             <>
-                <table className='table-auto'>
+                <table className='w-full text-left table-auto border border-slate-200'>
                     <thead>
                         <tr>
-                            <th>Timestamp</th>
-                            <th>File Name</th>
-                            <th>table Identifier</th>
+                            <th scope='col' className='px-6 py-3'>Timestamp</th>
+                            <th scope='col' className='px-6 py-3'>File Name</th>
+                            <th scope='col' className='px-6 py-3'>Table Identifier</th>
                         </tr>
                     </thead>
                     <tbody>
