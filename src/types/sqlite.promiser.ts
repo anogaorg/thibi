@@ -16,5 +16,6 @@ export interface SqliteWorkerResponse {
 }
 
 
-export type SqliteClientFunction = ((mt: MessageType, args: object) => Promise<SqliteWorkerResponse>);
-// TODO: Uh... should also type this, | ((message: SqliteWorkerMessage) => Promise<SqliteWorkerResponse>)
+type WorkerMessageFunction = (message: SqliteWorkerMessage) => Promise<SqliteWorkerResponse>;
+type TypeAndArgsFunction = (mt: MessageType, args: object) => Promise<SqliteWorkerResponse>;
+export type SqliteClientFunction = WorkerMessageFunction & TypeAndArgsFunction;
