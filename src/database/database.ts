@@ -1,10 +1,11 @@
 import { MAIN_THIBI_DB } from "../constants";
+import { MessageType } from "../types/sqlite.promiser"
 
 
 async function openDB(sqlite: unknown): Promise<void> {
     console.info("Opening main database");
     // @ts-ignore: sqlite client currently has no type
-    await sqlite('open', { filename: MAIN_THIBI_DB, vfs: 'opfs' })
+    await sqlite(MessageType.Open, { filename: MAIN_THIBI_DB, vfs: 'opfs' })
         .then(() => {
             console.info("Database successfully opened and connected");
         })
