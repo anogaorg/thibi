@@ -11,11 +11,11 @@ export interface SqliteWorkerMessage {
 }
 
 export interface SqliteWorkerResponse {
-    type: MessageType
+    type: MessageType | "error"
     result: object,
 }
 
-
 type WorkerMessageFunction = (message: SqliteWorkerMessage) => Promise<SqliteWorkerResponse>;
-type TypeAndArgsFunction = (mt: MessageType, args: object) => Promise<SqliteWorkerResponse>;
+// Potential TODO: Technically it can only be string for particular MessageType. Maybe there's a better way of expressing that.
+type TypeAndArgsFunction = (mt: MessageType, args: object | string) => Promise<SqliteWorkerResponse>;
 export type SqliteClientFunction = WorkerMessageFunction & TypeAndArgsFunction;
