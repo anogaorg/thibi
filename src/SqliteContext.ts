@@ -1,3 +1,4 @@
 import { createContext } from "react";
+import { SqliteClientFunction } from './types/sqlite.promiser'
 
-export const SqliteContext = createContext(null);
+export const SqliteContext = createContext({} as SqliteClientFunction);

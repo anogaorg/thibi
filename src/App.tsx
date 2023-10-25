@@ -3,15 +3,17 @@ import './App.css'
 import { SqliteContext } from './SqliteContext';
 import { Link, Outlet } from 'react-router-dom';
 import initDB from './database/database.ts';
+import { SqliteClientFunction } from './types/sqlite.promiser.ts';
 
 
 function Parent() {
   const [isSqlClientReady, setIsSqlClientReady] = useState(false);
-  const sqlClient = useRef(null);
+  const sqlClient = useRef({} as SqliteClientFunction);
 
   useEffect(() => {
     // sqlite3Worker1Promiser is available globally because of this script: sqlite3-worker1-promiser.js
-    if (sqlClient.current == null) {
+    // There's a non-zero chance this check is a hack, but it'll have to do for now.
+    if (typeof sqlClient.current !== "function") {
       // @ts-ignore: Trust me, this exists. :(
       const client = self.sqlite3Worker1Promiser({
         onready: () => {
