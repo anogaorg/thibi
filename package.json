@@ -8,7 +8,8 @@
     "build": "tsc && vite build && yarn lint",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "format-check": "prettier . --check"
+    "format-check": "prettier . --check",
+    "format": "prettier . --write"
   },
   "dependencies": {
     "@sqlite.org/sqlite-wasm": "^3.43.2-build1",
