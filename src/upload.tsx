@@ -12,6 +12,7 @@ import {
 import { DateTime, Settings } from 'luxon';
 
 import { SqliteContext } from './SqliteContext';
+import { MessageType, SqliteClientFunction } from './types/sqlite.promiser';
 
 Settings.defaultZone = "utc";
 
@@ -51,13 +52,12 @@ function ThibiForm(props: FormProps) {
 async function submitHandler(
     values: FieldValues,
     props: FormProps,
-    sqlite: unknown,
+    sqlite: SqliteClientFunction,
 ) {
     props.setFormSubmitted(true);
     // TODO: Parse file inputs and input those into its own file table
-    // @ts-ignore: sqlite client currently has no type
     await sqlite(
-        'exec',
+        MessageType.Exec,
         {
             sql: "INSERT INTO jobs (timestamp, file_name, table_identifier) VALUES ( ?, ?, ? )",
             bind: [DateTime.now().setZone("default").toISO(), values['thibi-file'][0].name, crypto.randomUUID()],
@@ -65,8 +65,7 @@ async function submitHandler(
     );
 
     let results: never[] = [];
-    // @ts-ignore: sqlite client currently has no type
-    await sqlite('exec', {
+    await sqlite(MessageType.Exec, {
         sql: 'SELECT * FROM jobs ORDER BY timestamp DESC',
         bind: [],
         returnValue: 'resultRows',
