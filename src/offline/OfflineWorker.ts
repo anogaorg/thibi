@@ -7,14 +7,13 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     addResourcesToCache([
       "/",
-      "/index.html",
-      "/style.css",
-      "/app.js",
-      "/image-list.js",
-      "/star-wars-logo.jpg",
-      "/gallery/bountyHunters.jpg",
-      "/gallery/myLittleVader.jpg",
-      "/gallery/snowTroopers.jpg",
+      "/sqlite3-opfs-async-proxy.js",
+      "/sqlite3-worker1-promiser.js",
+      "/sqlite3-worker1.js",
+      "/sqlite3.js",
+      "/sqlite3.wasm",
+      "/dev.anoga.thibi.index.js",
+      "/dev.anoga.thibi.index.css",
     ]),
   );
 });

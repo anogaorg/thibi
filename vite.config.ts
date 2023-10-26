@@ -26,4 +26,12 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ["@sqlite.org/sqlite-wasm"],
   },
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: "dev.anoga.thibi.[name].js", // see: https://rollupjs.org/configuration-options/#output-entryfilenames
+        assetFileNames: "dev.anoga.thibi.[name][extname]", // see: https://rollupjs.org/configuration-options/#output-assetfilenames
+      },
+    },
+  },
 });
