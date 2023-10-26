@@ -6,6 +6,36 @@ import ErrorPage from "./ErrorPage.tsx";
 import "./index.css";
 import Upload from "./upload.tsx";
 
+/*
+Vite support for Web Workers is kind of a snowflake
+NOTE: On Firefox, this can only be tested with a production build
+See more here: https://v3.vitejs.dev/guide/features.html#web-workers
+*/
+import OfflineWorker from './offline/OfflineWorker?worker&url'
+
+
+async function servy() {
+  try {
+    const ServiceWorker = navigator.serviceWorker;
+    const registration = await ServiceWorker.register(OfflineWorker, { type: "module", scope: "/" });
+
+    if (registration.installing) {
+      console.info("Service worker installing");
+    } else if (registration.waiting) {
+      console.info("Service worker installed");
+    } else if (registration.active) {
+      console.info("Service worker active");
+    }
+  } catch (error: unknown) {
+    console.error(`Service Worker registration failed with ${error}`);
+  }
+}
+
+if ("serviceWorker" in navigator) {
+  servy();
+}
+
+
 const router = createBrowserRouter([
   {
     path: "/",
