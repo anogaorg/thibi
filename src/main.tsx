@@ -11,13 +11,15 @@ Vite support for Web Workers is kind of a snowflake
 NOTE: On Firefox, this can only be tested with a production build
 See more here: https://v3.vitejs.dev/guide/features.html#web-workers
 */
-import OfflineWorker from './offline/OfflineWorker?worker&url'
-
+import OfflineWorker from "./offline/OfflineWorker?worker&url";
 
 async function servy() {
   try {
     const ServiceWorker = navigator.serviceWorker;
-    const registration = await ServiceWorker.register(OfflineWorker, { type: "module", scope: "/" });
+    const registration = await ServiceWorker.register(OfflineWorker, {
+      type: "module",
+      scope: "/",
+    });
 
     if (registration.installing) {
       console.info("Service worker installing");
@@ -34,7 +36,6 @@ async function servy() {
 if ("serviceWorker" in navigator) {
   servy();
 }
-
 
 const router = createBrowserRouter([
   {
