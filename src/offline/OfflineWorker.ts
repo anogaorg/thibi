@@ -43,7 +43,7 @@ const cacheFirst = async (request: Request) => {
     return fetchedResponse;
   } catch (error) {
     console.error(
-      "Failed to fetch resource from offline mode and over the network",
+      `Failed to fetch resource from offline mode and over the network ${error}`,
     );
     return new Response("Unexpected offline worker error", {
       status: 500,
