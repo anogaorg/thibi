@@ -1,36 +1,38 @@
-let offlineMode = false;
+// let offlineMode = false;
 
-self.onmessage = (event) => {
-  console.warn(event.data);
-  switch (event.data) {
-    case "enable": {
-      console.info("Enabling offline mode");
-      offlineMode = true;
-      break;
-    }
-    case "disable": {
-      console.info("Disabling offline mode");
-      offlineMode = false;
-      break;
-    }
-  }
-};
+// self.onmessage = (event) => {
+//   console.warn(event.data);
+//   switch (event.data) {
+//     case "enable": {
+//       console.info("Enabling offline mode");
+//       offlineMode = true;
+//       break;
+//     }
+//     case "disable": {
+//       console.info("Disabling offline mode");
+//       offlineMode = false;
+//       break;
+//     }
+//   }
+// };
 
-self.addEventListener("message", (event: MessageEvent<string>) => {
-  console.warn(event.data);
-  switch (event.data) {
-    case "enable": {
-      console.info("Enabling offline mode");
-      offlineMode = true;
-      break;
-    }
-    case "disable": {
-      console.info("Disabling offline mode");
-      offlineMode = false;
-      break;
-    }
-  }
-});
+// self.addEventListener("message", (event: MessageEvent<string>) => {
+//   console.warn(event.data);
+//   switch (event.data) {
+//     case "enable": {
+//       console.info("Enabling offline mode");
+//       offlineMode = true;
+//       break;
+//     }
+//     case "disable": {
+//       console.info("Disabling offline mode");
+//       offlineMode = false;
+//       break;
+//     }
+//   }
+// });
+
+
 self.addEventListener("install", (event: Event) => {
   // This is interesting. `addEventListener` doesn't have an overload for ExtendableEvent. Maybe in later TypeScript targets, it does? Casting for now.
   const castEvent = event as ExtendableEvent;
@@ -49,7 +51,7 @@ self.addEventListener("install", (event: Event) => {
 });
 
 self.addEventListener("fetch", (event: Event) => {
-    console.info(`This is my curse: ${event}`);
+  console.info(`This is my curse: ${event}`);
   const fetchEvent = event as FetchEvent;
   fetchEvent.respondWith(cacheFirst(fetchEvent.request));
   console.info("Done");
