@@ -13,13 +13,17 @@ See more here: https://v3.vitejs.dev/guide/features.html#web-workers
 */
 import OfflineWorker from "./offline/OfflineWorker?worker&url";
 
-async function servy() {
+async function startServiceWorker() {
   try {
     const ServiceWorker = navigator.serviceWorker;
-    const registration = await ServiceWorker.register(OfflineWorker, {
-      type: "module",
-      scope: "/",
-    });
+    let registration = await ServiceWorker.getRegistration(OfflineWorker);
+
+    if (!registration) {
+      registration = await ServiceWorker.register(OfflineWorker, {
+        type: "module",
+        scope: "/",
+      });
+    }
 
     if (registration.installing) {
       console.info("Service worker installing");
@@ -34,7 +38,7 @@ async function servy() {
 }
 
 if ("serviceWorker" in navigator) {
-  servy();
+  startServiceWorker();
 }
 
 const router = createBrowserRouter([

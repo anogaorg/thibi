@@ -5,6 +5,8 @@ import { Link, Outlet } from "react-router-dom";
 import initDB from "./database/database.ts";
 import { SqliteClientFunction } from "./types/sqlite.promiser.ts";
 
+import OfflineWorker from "./offline/OfflineWorker?worker&url";
+
 function Parent() {
   const [isSqlClientReady, setIsSqlClientReady] = useState(false);
   const sqlClient = useRef({} as SqliteClientFunction);
@@ -94,6 +96,23 @@ function App() {
                 </svg>
                 <p> Upload </p>
               </Link>
+            </li>
+            <li>
+              <button
+                onClick={async (e: unknown) => {
+                  console.log(`erz? ${e}`);
+                  const t =
+                    await navigator.serviceWorker.getRegistration(
+                      OfflineWorker,
+                    );
+                  console.log(t);
+                  t?.active?.postMessage("enable");
+                  t?.waiting?.postMessage("enable");
+                  t?.installing?.postMessage("enable");
+                }}
+              >
+                GO AWF
+              </button>
             </li>
           </ul>
         </nav>

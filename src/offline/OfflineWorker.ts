@@ -1,3 +1,36 @@
+let offlineMode = false;
+
+self.onmessage = (event) => {
+  console.warn(event.data);
+  switch (event.data) {
+    case "enable": {
+      console.info("Enabling offline mode");
+      offlineMode = true;
+      break;
+    }
+    case "disable": {
+      console.info("Disabling offline mode");
+      offlineMode = false;
+      break;
+    }
+  }
+};
+
+self.addEventListener("message", (event: MessageEvent<string>) => {
+  console.warn(event.data);
+  switch (event.data) {
+    case "enable": {
+      console.info("Enabling offline mode");
+      offlineMode = true;
+      break;
+    }
+    case "disable": {
+      console.info("Disabling offline mode");
+      offlineMode = false;
+      break;
+    }
+  }
+});
 self.addEventListener("install", (event: Event) => {
   // This is interesting. `addEventListener` doesn't have an overload for ExtendableEvent. Maybe in later TypeScript targets, it does? Casting for now.
   const castEvent = event as ExtendableEvent;
@@ -16,8 +49,10 @@ self.addEventListener("install", (event: Event) => {
 });
 
 self.addEventListener("fetch", (event: Event) => {
+    console.info(`This is my curse: ${event}`);
   const fetchEvent = event as FetchEvent;
   fetchEvent.respondWith(cacheFirst(fetchEvent.request));
+  console.info("Done");
 });
 
 const addResourcesToCache = async (resources: string[]) => {
@@ -30,7 +65,7 @@ const putInCache = async (request: Request, response: Response) => {
   await cache.put(request, response);
 };
 
-const cacheFirst = async (request: Request) => {
+const cacheFirst = async (request: Request): Promise<Response> => {
   const cached = await caches.match(request);
 
   if (cached) {
