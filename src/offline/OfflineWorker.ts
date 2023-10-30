@@ -1,38 +1,3 @@
-// let offlineMode = false;
-
-// self.onmessage = (event) => {
-//   console.warn(event.data);
-//   switch (event.data) {
-//     case "enable": {
-//       console.info("Enabling offline mode");
-//       offlineMode = true;
-//       break;
-//     }
-//     case "disable": {
-//       console.info("Disabling offline mode");
-//       offlineMode = false;
-//       break;
-//     }
-//   }
-// };
-
-// self.addEventListener("message", (event: MessageEvent<string>) => {
-//   console.warn(event.data);
-//   switch (event.data) {
-//     case "enable": {
-//       console.info("Enabling offline mode");
-//       offlineMode = true;
-//       break;
-//     }
-//     case "disable": {
-//       console.info("Disabling offline mode");
-//       offlineMode = false;
-//       break;
-//     }
-//   }
-// });
-
-
 self.addEventListener("install", (event: Event) => {
   // This is interesting. `addEventListener` doesn't have an overload for ExtendableEvent. Maybe in later TypeScript targets, it does? Casting for now.
   const castEvent = event as ExtendableEvent;
@@ -46,9 +11,15 @@ self.addEventListener("install", (event: Event) => {
       "/sqlite3.wasm",
       "/dev.anoga.thibi.index.js",
       "/dev.anoga.thibi.index.css",
-      "/anoga_thibi_icon_placeholder.png"
+      "/anoga_thibi_icon_placeholder.png",
     ]),
   );
+});
+
+self.addEventListener("activate", (event: Event) => {
+  const activate = event as ExtendableEvent;
+  //@ts-ignore Typescript complaining that this should be Clients. But Clients doc specifically call out that service worker should use self.clients.
+  activate.waitUntil(self.clients.claim());
 });
 
 self.addEventListener("fetch", (event: Event) => {
@@ -70,10 +41,12 @@ const putInCache = async (request: Request, response: Response) => {
 };
 
 const cacheFirst = async (request: Request): Promise<Response> => {
-  const cached = await caches.match(request);
+  if (!self.navigator.onLine) {
+    const cached = await caches.match(request);
 
-  if (cached) {
-    return cached;
+    if (cached) {
+      return cached;
+    }
   }
 
   try {

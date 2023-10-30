@@ -10,6 +10,10 @@ Install dependencies with `yarn` command.
 
 To run what would be the production build, do `yarn build` and `yarn preview`.
 
+## Offline Tests
+
+To test the Offline Service worker, use Chrome >> DevTools >> Application >> Service workers >> (verify the service worker is activated and running) >> click the checkbox that says "Offline". Now the worker will operate as if offline.
+
 # Icons
 
 For icons, use [Heroicons](https://heroicons.com/). Copying the SVG seems to be working okay so far.
