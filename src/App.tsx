@@ -95,15 +95,6 @@ function App() {
                 <p> Upload </p>
               </Link>
             </li>
-            <li>
-              <button
-                onClick={async (e: unknown) => {
-                  console.log(`erz? ${e}`);
-                }}
-              >
-                GO AWF
-              </button>
-            </li>
           </ul>
         </nav>
       </aside>
