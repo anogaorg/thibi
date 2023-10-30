@@ -24,10 +24,7 @@ self.addEventListener("activate", (event: Event) => {
 
 self.addEventListener("fetch", (event: Event) => {
   const fetchEvent = event as FetchEvent;
-  console.info(`This is my curse:`);
-  console.info(fetchEvent);
   fetchEvent.respondWith(cacheFirst(fetchEvent.request));
-  console.info("Done");
 });
 
 const addResourcesToCache = async (resources: string[]) => {

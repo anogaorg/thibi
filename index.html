@@ -14,22 +14,13 @@
   <body>
     <div id="root" class="flex min-h-screen w-screen"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script>
-      const importObject = {
-        imports: {
-          imported_func(arg) {
-            console.trace(arg);
-          },
-        },
-      };
-
-      // This along with other imports of sqlite objects are to better support offline mode.
-      // We are trying to force the offline Service Worker to pull all of the required scripts.
-      WebAssembly.instantiate(fetch("/sqlite3.wasm"), importObject);
+    <script async="false">
+      // Wonder if this is could be subject to a race-condition perspective, but too tired to find out right now
+      fetch("/sqlite3.wasm");
+      fetch("/sqlite3.js");
+      fetch("/sqlite3-worker1.js");
+      fetch("/sqlite3-opfs-async-proxy.js");
     </script>
-    <script type="module" src="/sqlite3.js"></script>
-    <script type="module" src="/sqlite3-worker1.js"></script>
-    <script type="module" src="/sqlite3-opfs-async-proxy.js"></script>
     <script type="module" src="/sqlite3-worker1-promiser.js"></script>
   </body>
 </html>
