@@ -46,13 +46,15 @@ self.addEventListener("install", (event: Event) => {
       "/sqlite3.wasm",
       "/dev.anoga.thibi.index.js",
       "/dev.anoga.thibi.index.css",
+      "/anoga_thibi_icon_placeholder.png"
     ]),
   );
 });
 
 self.addEventListener("fetch", (event: Event) => {
-  console.info(`This is my curse: ${event}`);
   const fetchEvent = event as FetchEvent;
+  console.info(`This is my curse:`);
+  console.info(fetchEvent);
   fetchEvent.respondWith(cacheFirst(fetchEvent.request));
   console.info("Done");
 });

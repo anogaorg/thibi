@@ -47,6 +47,7 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <ErrorPage />,
     children: [
+      // TODO: Add Index route: https://reactrouter.com/en/main/start/tutorial#index-routes
       {
         path: "upload",
         element: <Upload />,
