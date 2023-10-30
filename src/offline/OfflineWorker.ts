@@ -38,12 +38,10 @@ const putInCache = async (request: Request, response: Response) => {
 };
 
 const cacheFirst = async (request: Request): Promise<Response> => {
-  if (!self.navigator.onLine) {
-    const cached = await caches.match(request);
+  const cached = await caches.match(request);
 
-    if (cached) {
-      return cached;
-    }
+  if (cached) {
+    return cached;
   }
 
   try {
