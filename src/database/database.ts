@@ -3,11 +3,20 @@ import { MessageType, SqliteClientFunction } from "../types/sqlite.promiser";
 
 async function openDB(sqlite: SqliteClientFunction): Promise<void> {
   console.info("Opening main database");
-  await sqlite(MessageType.Open, { filename: MAIN_THIBI_DB, vfs: "opfs" }).then(
-    () => {
-      console.info("Database successfully opened and connected");
-    },
-  );
+  try {
+    await sqlite(MessageType.Open, {
+      filename: MAIN_THIBI_DB,
+      vfs: "opfs",
+    }).then(() => {
+      console.info("Persistent database successfully opened and connected");
+    });
+  } catch (err: unknown) {
+    await sqlite(MessageType.Open, { filename: MAIN_THIBI_DB }).then(() => {
+      console.info(
+        "Transient (in-memory) database successfully opened and connected",
+      );
+    });
+  }
 }
 
 async function initJobsTable(sqlite: SqliteClientFunction): Promise<void> {
@@ -22,7 +31,7 @@ async function initJobsTable(sqlite: SqliteClientFunction): Promise<void> {
 }
 
 async function initDB(sqlite: SqliteClientFunction): Promise<void> {
-  console.info("Initializing database using `opfs`");
+  console.info("Initializing database");
   await openDB(sqlite);
   await initJobsTable(sqlite);
 }
