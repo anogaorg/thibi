@@ -26,14 +26,14 @@ async function startServiceWorker() {
     }
 
     if (registration.installing) {
-      console.info("Service worker installing");
+      console.debug("Offline service worker installing");
     } else if (registration.waiting) {
-      console.info("Service worker installed");
+      console.debug("Offline service worker installed");
     } else if (registration.active) {
-      console.info("Service worker active");
+      console.debug("Offline service worker active");
     }
   } catch (error: unknown) {
-    console.error(`Service Worker registration failed with ${error}`);
+    console.error(`Offline service worker registration failed with ${error}`);
   }
 }
 
