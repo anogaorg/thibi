@@ -9,7 +9,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "format-check": "prettier . --check",
-    "format": "prettier . --write"
+    "format": "prettier . --write",
+    "watch": "vite build --watch"
   },
   "dependencies": {
     "@sqlite.org/sqlite-wasm": "^3.43.2-build1",
