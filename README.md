@@ -14,6 +14,13 @@ To run what would be the production build, do `yarn build` and `yarn preview`.
 
 To test the Offline Service worker, use Chrome >> DevTools >> Application >> Service workers >> (verify the service worker is activated and running) >> click the checkbox that says "Offline". Now the worker will operate as if offline.
 
+## Local SQLite3 Testing
+You can run `sqlite3` locally. There are some helpful commands to know:
+```
+.headers on (show table columns when returning query results)
+.mode line (equivalent of \G in MySQL)
+```
+
 # Icons
 
 For icons, use [Heroicons](https://heroicons.com/). Copying the SVG seems to be working okay so far.
@@ -31,3 +38,4 @@ But hey, it works for now.
 # Tailwind Tips
 
 Tailwind is nice, but it might still be a little low-level than what I'm looking for as a beginner CSS human. Liked what [Flowbite](https://flowbite.com/docs/components/forms/#file-upload) has done. It will be good to use them as a learning reference for doing custom components/stylings.
+
