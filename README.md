@@ -37,6 +37,10 @@ NOTE: The NPM package is still helpful, at least for types. Though types themsel
 
 But hey, it works for now.
 
+## Query Options
+
+The `Exec` options aren't easily discoverable. This is a reminder of myself to review this and the code to understand how it's supposed to work/what options you can use: https://sqlite.org/wasm/file/demo-123.js?txt.
+
 # Tailwind Tips
 
 Tailwind is nice, but it might still be a little low-level than what I'm looking for as a beginner CSS human. Liked what [Flowbite](https://flowbite.com/docs/components/forms/#file-upload) has done. It will be good to use them as a learning reference for doing custom components/stylings.
