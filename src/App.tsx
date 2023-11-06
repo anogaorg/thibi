@@ -4,7 +4,6 @@ import { SqliteContext } from "./SqliteContext";
 import { Link, Outlet } from "react-router-dom";
 import initDB from "./database/database.ts";
 import { SqliteClientFunction } from "./types/sqlite.promiser.ts";
-import { SqlExplorer } from "./sql-explorer/sql.explorer.tsx";
 
 function Parent() {
   const [isSqlClientReady, setIsSqlClientReady] = useState(false);
