@@ -104,6 +104,10 @@ async function submitHandler(
             uuid,
           ],
         });
+
+        // Starting transaction primarily to speed processing up.
+        await sqlite(MessageType.Exec, "BEGIN TRANSACTION;");
+
         // TODO: Decide between Chunk and Step. Chunk seems the more reasonable. But doesn't seem to have proper type support right now.
         Papa.parse(uploadFile, {
           delimiter: delimiter,
@@ -123,6 +127,9 @@ async function submitHandler(
             });
           },
           complete: async () => {
+            // Close out the transaction
+            await sqlite(MessageType.Exec, "COMMIT;"); // TODO: Need generally error handling in a lot of places here, but missing any potential ROLLBACK Handling and kind of hoping for the best right now.
+
             // TODO: Do something else, but showing this for now...
             let queryResults: never[] = [];
             await sqlite(MessageType.Exec, {
