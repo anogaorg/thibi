@@ -9,7 +9,7 @@ import { SqliteContext } from "./SqliteContext";
 import { MessageType, SqliteClientFunction } from "./types/sqlite.promiser";
 
 import Papa from "papaparse";
-import { Parser, ParseResult } from "@types/papaparse";
+import { ParseResult } from "papaparse";
 
 Settings.defaultZone = "utc";
 
@@ -87,9 +87,8 @@ async function submitHandler(
     header: true,
     preview: 1,
     complete: async (results: ParseResult<object[]>) => {
-      console.log(results);
       if (results.errors.length == 0) {
-        let columns = results.meta.fields;
+        const columns = results.meta.fields;
         // TODO: In the future, it would be interesting to see if jobs could be processed in the backgrounds via some WebWorker-based work scheduler or something.
         // TODO: My brain doesn't work right now, but how would we properly sanitize the column inputs here?
         await sqlite(MessageType.Exec, {
@@ -110,7 +109,7 @@ async function submitHandler(
           delimiter: delimiter,
           header: true,
           skipEmptyLines: true, // TODO: Evaluate this and document it at least, this might be controversial but I can't think of a reason to analyze an empty row.
-          step: async (row: ParseResult<object>, _parser: Parser) => {
+          step: async (row: ParseResult<object>) => {
             // TODO: Follow up on how to efficiently insert rows based on, https://sqlite.org/forum/forumpost/e95cec452065b5dc
             await sqlite(MessageType.Exec, {
               sql: `
@@ -123,7 +122,7 @@ async function submitHandler(
               bind: [...Object.values(row.data)],
             });
           },
-          complete: async (_results: ParseResult<object[]>) => {
+          complete: async () => {
             // TODO: Do something else, but showing this for now...
             let queryResults: never[] = [];
             await sqlite(MessageType.Exec, {
