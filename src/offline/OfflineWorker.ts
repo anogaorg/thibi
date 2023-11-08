@@ -5,6 +5,7 @@ self.addEventListener("install", (event: Event) => {
     addResourcesToCache([
       "/",
       "/upload",
+      "/explore",
       "/sqlite3-opfs-async-proxy.js",
       "/sqlite3-worker1-promiser.js",
       "/sqlite3-worker1.js",

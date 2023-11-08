@@ -13,6 +13,13 @@
     "watch": "vite build --watch"
   },
   "dependencies": {
+    "@codemirror/autocomplete": "^6.10.2",
+    "@codemirror/commands": "^6.3.0",
+    "@codemirror/lang-sql": "^6.5.4",
+    "@codemirror/language": "^6.9.2",
+    "@codemirror/lint": "^6.4.2",
+    "@codemirror/search": "^6.5.4",
+    "@codemirror/view": "^6.22.0",
     "@sqlite.org/sqlite-wasm": "^3.43.2-build1",
     "localforage": "^1.10.0",
     "luxon": "^3.4.3",

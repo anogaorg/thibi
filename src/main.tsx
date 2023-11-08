@@ -12,6 +12,7 @@ NOTE: On Firefox, this can only be tested with a production build
 See more here: https://v3.vitejs.dev/guide/features.html#web-workers
 */
 import OfflineWorker from "./offline/OfflineWorker?worker&url";
+import { SqlExplorer } from "./sql-explorer/sql.explorer.tsx";
 
 async function startServiceWorker() {
   try {
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
       {
         path: "upload",
         element: <Upload />,
+      },
+      {
+        path: "explore",
+        element: <SqlExplorer />,
       },
     ],
   },
