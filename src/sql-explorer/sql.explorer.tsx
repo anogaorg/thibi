@@ -36,6 +36,7 @@ import { SQLite, sql as codemirrorSql } from "@codemirror/lang-sql";
 import React, { useContext, useState } from "react";
 import { MessageType } from "../types/sqlite.promiser.ts";
 import { SqliteContext } from "../SqliteContext";
+import { ColumnDef, RowSelection, createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 
 const extensions: Extension = (() => [
   lineNumbers(),
@@ -70,6 +71,94 @@ const extensions: Extension = (() => [
 const editor: EditorView = new EditorView({
   extensions: extensions,
 });
+
+interface ResultsTableProps {
+  data: object[],
+  // columns: ColumnDef<object[]>[]
+}
+
+const columnHelper = createColumnHelper<object>(); // this doesn't have to exist, we can just use objects
+
+const defaultColumns = [
+  // Accessor Column
+  columnHelper.accessor('col1', {
+    cell: info => info.getValue(),
+    footer: props => props.column.id,
+  }),
+  // Accessor Column
+  columnHelper.accessor(row => row.col2, {
+    // id: crypto.randomUUID(),
+    // cell: info => info.getValue(),
+    header: "Column II</span>",
+    // footer: props => props.column.id,
+  }),
+  {
+    // header: "Column III",
+    accessorKey: "col2"
+  }
+]
+
+function QueryResultsTable(props: ResultsTableProps) {
+  const table = useReactTable({
+    data: props.data,
+    columns: defaultColumns,
+    getCoreRowModel: getCoreRowModel()
+  });
+
+  return (
+    <div className="p-2">
+      <table>
+        <thead>
+          {table.getHeaderGroups().map(headerGroup => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map(header => (
+                <th key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {table.getRowModel().rows.map(row => (
+            <tr key={row.id}>
+              {row.getVisibleCells().map(cell => (
+                <td key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+        <tfoot>
+          {table.getFooterGroups().map(footerGroup => (
+            <tr key={footerGroup.id}>
+              {footerGroup.headers.map(header => (
+                <th key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                      header.column.columnDef.footer,
+                      header.getContext()
+                    )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </tfoot>
+      </table>
+      <div className="h-4" />
+      <button onClick={() => rerender()} className="border p-2">
+        Rerender
+      </button>
+    </div>
+  )
+}
 
 export function SqlExplorer() {
   const sqlite = useContext(SqliteContext);
@@ -106,9 +195,13 @@ export function SqlExplorer() {
         TODO: A nice tabular display of the query results.
         <br />
         <pre className="text-start">
+        {Object.keys(sqlResults).length != 0
+            ? <QueryResultsTable data={[{"col1": "columbia", "col3": "colombia", "col2": "astro"}]}/>
+            : ""}
           {Object.keys(sqlResults).length != 0
             ? JSON.stringify(sqlResults, null, 4)
             : ""}
+
         </pre>
       </div>
     </>
