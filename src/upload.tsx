@@ -8,6 +8,9 @@ import { DateTime, Settings } from "luxon";
 import { SqliteContext } from "./SqliteContext";
 import { MessageType, SqliteClientFunction } from "./types/sqlite.promiser";
 
+import Papa from "papaparse";
+import { ParseResult } from "papaparse";
+
 Settings.defaultZone = "utc";
 
 interface FormProps {
@@ -46,9 +49,21 @@ function ThibiForm(props: FormProps) {
             Upload a file to start an analysis job for Thibi
           </p>
         </div>
+        <label
+          htmlFor="delim-field"
+          className="block text-gray-700 text-sm font-bold mb-2"
+        >
+          File Delimiter:
+        </label>
+        <input
+          id="delim-field"
+          type="text"
+          required
+          {...register("thibi-delimiter", { required: true })}
+        ></input>
 
         <input
-          className="btn-primary text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className="block btn-primary text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           type="submit"
           value="Upload File"
         ></input>
@@ -63,31 +78,82 @@ async function submitHandler(
   sqlite: SqliteClientFunction,
 ) {
   props.setFormSubmitted(true);
-  // TODO: Parse file inputs and input those into its own file table
-  await sqlite(MessageType.Exec, {
-    sql: "INSERT INTO jobs (timestamp, file_name, table_identifier) VALUES ( ?, ?, ? )",
-    bind: [
-      DateTime.now().setZone("default").toISO(),
-      values["thibi-file"][0].name,
-      crypto.randomUUID(),
-    ],
-  });
+  const delimiter = values["thibi-delimiter"];
+  const uploadFile: File = values["thibi-file"][0];
+  const uuid = crypto.randomUUID();
 
-  let results: never[] = [];
-  await sqlite(MessageType.Exec, {
-    sql: "SELECT * FROM jobs ORDER BY timestamp DESC",
-    bind: [],
-    returnValue: "resultRows",
-    rowMode: "array",
-  })
-    .then((x: unknown) => {
-      // @ts-ignore: TODO, will try to map to actual interface instead of unknown
-      results = x.result?.resultRows;
-    })
-    .catch((err: unknown) => {
-      console.error(err);
-    });
-  props.setLoading(results);
+  Papa.parse(uploadFile, {
+    delimiter: delimiter,
+    header: true,
+    preview: 1,
+    complete: async (results: ParseResult<object[]>) => {
+      if (results.errors.length == 0) {
+        const columns = results.meta.fields;
+        // TODO: In the future, it would be interesting to see if jobs could be processed in the backgrounds via some WebWorker-based work scheduler or something.
+        // TODO: My brain doesn't work right now, but how would we properly sanitize the column inputs here?
+        await sqlite(MessageType.Exec, {
+          sql: `
+          BEGIN TRANSACTION;
+          CREATE TABLE "${uuid}" ( ${columns?.map((c) => `"${c}"`).join(",")} );
+          INSERT INTO jobs (timestamp, file_name, table_identifier) VALUES ( ?, ?, ? );
+          COMMIT;
+          `,
+          bind: [
+            DateTime.now().setZone("default").toISO(),
+            uploadFile.name,
+            uuid,
+          ],
+        });
+
+        // Starting transaction primarily to speed processing up.
+        await sqlite(MessageType.Exec, "BEGIN TRANSACTION;");
+
+        // TODO: Decide between Chunk and Step. Chunk seems the more reasonable. But doesn't seem to have proper type support right now.
+        Papa.parse(uploadFile, {
+          delimiter: delimiter,
+          header: true,
+          skipEmptyLines: true, // TODO: Evaluate this and document it at least, this might be controversial but I can't think of a reason to analyze an empty row.
+          step: async (row: ParseResult<object>) => {
+            // TODO: Follow up on how to efficiently insert rows based on, https://sqlite.org/forum/forumpost/e95cec452065b5dc
+            await sqlite(MessageType.Exec, {
+              sql: `
+              INSERT INTO "${uuid}" ( ${columns?.join(",")} ) VALUES ( ${Array(
+                columns?.length,
+              )
+                .fill("?")
+                .join(",")} )
+              `,
+              bind: [...Object.values(row.data)],
+            });
+          },
+          complete: async () => {
+            // Close out the transaction
+            await sqlite(MessageType.Exec, "COMMIT;"); // TODO: Need generally error handling in a lot of places here, but missing any potential ROLLBACK Handling and kind of hoping for the best right now.
+
+            // TODO: Do something else, but showing this for now...
+            let queryResults: never[] = [];
+            await sqlite(MessageType.Exec, {
+              sql: "SELECT * FROM jobs ORDER BY timestamp DESC",
+              bind: [],
+              returnValue: "resultRows",
+              rowMode: "array",
+            })
+              .then((x: unknown) => {
+                // @ts-ignore: TODO, will try to map to actual interface instead of unknown
+                queryResults = x.result?.resultRows;
+              })
+              .catch((err: unknown) => {
+                console.error(err);
+              });
+            props.setLoading(queryResults);
+          },
+        });
+      } else {
+        // TODO: Show the user an error parsing the file
+        console.error("Failed to parse the provided file.");
+      }
+    },
+  });
 }
 
 interface PreviewProps {
