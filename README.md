@@ -4,7 +4,7 @@
 
 # Local Development
 
-Install dependencies with `yarn` command.
+Install dependencies with `yarn` command. (Install Nodejs if you do not have it)
 
 `yarn dev` to start development server with hot reload.
 
