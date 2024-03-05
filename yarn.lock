@@ -538,10 +538,10 @@
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.10.0.tgz#e2170dc2049b06e65bbe883adad0e8ddf8291278"
   integrity sha512-Lm+fYpMfZoEucJ7cMxgt4dYt8jLfbpwRCzAjm9UgSLOkmlqo9gupxt6YX3DY0Fk155NT9l17d/ydi+964uS9Lw==
 
-"@sqlite.org/sqlite-wasm@^3.43.2-build1":
-  version "3.43.2-build1"
-  resolved "https://registry.yarnpkg.com/@sqlite.org/sqlite-wasm/-/sqlite-wasm-3.43.2-build1.tgz#5f1768e2df7328bdd9a5b9ec7c94eaa0bd36705a"
-  integrity sha512-f0qln3z0RFWV5WTwsidFRJ0e8dCeilGB4kKVUTA0IHVPIIAW75AWZKfPcI5kHiC+VIYhlT8lM3k+9MNeAcv9uA==
+"@sqlite.org/sqlite-wasm@^3.45.1-build1":
+  version "3.45.1-build1"
+  resolved "https://registry.yarnpkg.com/@sqlite.org/sqlite-wasm/-/sqlite-wasm-3.45.1-build1.tgz#648f6a0a0a4c3a67aff24b0e1331af655b86fb60"
+  integrity sha512-1EgshFNhVeBtZ9KtQPm3PzzJ2CtpmXAq2DAPywy7WZ3gOK6p5n8TY+M+mBMpQCF5cLqrdNFb3Kp9uNie9rUAHw==
 
 "@tailwindcss/forms@^0.5.6":
   version "0.5.6"
